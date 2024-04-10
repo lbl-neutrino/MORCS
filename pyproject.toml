@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "MORCS"
+version = "0.1"
+authors = [ { name="The DUNE Collaboration" } ]
+description = "Mx2x2 Overall Run Control Software"
+requires-python = ">=3.9"
+dependencies = [
+    "fabric",
+    "requests",
+    "sqlalchemy",
+    "wxpython"
+]
