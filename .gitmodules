@@ -1,0 +1,3 @@
+[submodule "mx2-online"]
+	path = mx2-online
+	url = https://github.com/DUNE/mx2-online
