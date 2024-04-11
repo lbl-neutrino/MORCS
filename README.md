@@ -9,6 +9,7 @@ git clone --recurse-submodules https://github.com/mjkramer/MORCS.git
 cd MORCS
 python -m venv morcs.venv
 source morcs.venv/bin/activate
+pip install --upgrade pip setuptools wheel
 pip install -e .
 ```
 
