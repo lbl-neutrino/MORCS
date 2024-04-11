@@ -5,12 +5,12 @@ import tomllib
 
 from .db import DB
 from .subsystems.crs import CrsController
-# from .subsystems.lrs import LrsController
+from .subsystems.lrs import LrsController
 # from .subsystems.minerva import MinervaController
 
 SUBSYSTEMS = {
     'crs': CrsController,
-    # 'lrs': LrsController,
+    'lrs': LrsController,
     # 'minerva': MinervaController
 }
 
