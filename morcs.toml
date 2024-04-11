@@ -1,6 +1,5 @@
 [global]
-# subsystems = ["crs", "lrs"]
-subsystems = ["crs"]
+subsystems = ["crs", "lrs"]
 db = "morcs.sqlite"
 runtime_sec = 86400
 data_stream = "commissioning"
@@ -14,4 +13,4 @@ log_dir = "/log/commission/April2024/continued_pedestal.2"
 packet = false
 
 [lrs]
-host = "acd-daq01:5051"
+host = "192.168.197.42:5051"
