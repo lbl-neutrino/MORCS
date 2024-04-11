@@ -11,8 +11,8 @@ requires-python = ">=3.9"
 dependencies = [
     "fabric",
     "requests",
-    "sqlalchemy",
-    "wxpython"
+    "sqlalchemy"
+#    "wxpython"
 ]
 
 [project.scripts]
