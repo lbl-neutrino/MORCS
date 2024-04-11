@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 import argparse
-import tomllib
+import toml
 
 from .db import DB
 from .subsystems.crs import CrsController
@@ -43,7 +43,7 @@ def main():
 
     args = ap.parse_args()
 
-    config = tomllib.load(open(args.cfg, 'rb'))
+    config = toml.load(open(args.cfg, 'r'))
     app = MORCS(config)
 
     if args.subcommand == 'start-run':
