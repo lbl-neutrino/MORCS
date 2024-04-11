@@ -17,7 +17,7 @@ class CrsController(DaqController):
 
         cmds = [
             # Ensure that failures mid-pipe get reported
-            f'set -o pipefail'
+            # f'set -o pipefail',
             f'source {venv_dir}/bin/activate',
             f'cd {daq_dir}'
         ]
@@ -49,22 +49,24 @@ class CrsController(DaqController):
         filename = self.datafile(run)
         opts.append(f'--filename "{output_dir}/{filename}"')
 
-        inner_cmd = f'./record_data.py {" ".join(opts)}'
+        inner_cmd = f'python record_data.py {" ".join(opts)}'
 
         log_dir = self.config['crs']['log_dir']
         log_path = f'{log_dir}/{filename}.log'
 
         cmds = [
             *self.preamble(),
-            f'mkdir -p "{output_dir}" "{log_dir}"'
-            f'(nohup {inner_cmd} > "{log_path}" 2>&1 & echo $! > "{self.pidfile()}")'
+            f'mkdir -p "{output_dir}" "{log_dir}"',
+            f'(nohup {inner_cmd} >> "{log_path}" 2>&1 & echo $! > "{self.pidfile()}")'
         ]
 
-        r: Result = self.conn.run('&&'.join(cmds))
-        assert r.return_code == 0, 'Error starting CRS DAQ'
+        print('\n'.join(cmds))
+
+        r: Result = self.conn.run(' ; '.join(cmds), disown=True, warn=True)
+        # assert r.return_code == 0, 'Error starting CRS DAQ'
 
     def stop_run(self):
-        run = self.state['next_run'] - 1
+        run = self.db.latest_run()
 
         opts = []
         opts.append(f'--run {run}')
@@ -78,9 +80,11 @@ class CrsController(DaqController):
         cmds = [
             *self.preamble(),
             f'kill -INT $(cat {self.pidfile()})',
-            f'rm {self.pidfile()}'
-            f'./dump_metadata.py {" ".join(opts)}'
+            f'rm {self.pidfile()}',
+            f'python dump_metadata.py {" ".join(opts)}'
         ]
 
-        r: Result = self.conn.run('&&'.join(cmds))
-        assert r.return_code == 0, 'Error stopping CRS DAQ'
+        print('\n'.join(cmds))
+
+        r: Result = self.conn.run(' ; '.join(cmds), warn=True)
+        # assert r.return_code == 0, 'Error stopping CRS DAQ'
