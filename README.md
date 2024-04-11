@@ -38,4 +38,4 @@ Run information is stored in `morcs.sqlite`. Currently only the run number, star
 
 ## Current status
 
-The CRS controller has been tested in a mock environment. The LRS controller needs to be updated to use the new Flask API. Both the LRS and MINERvA controllers need to be updated following recent changes to `BaseController`, and the run number needs to be propagated.
+The CRS controller has been tested in a mock environment. The LRS controller needs to be updated to use the new Flask API. Both the LRS and MINERvA controllers need to be updated following recent changes to `DaqController`, and the run number needs to be propagated.
