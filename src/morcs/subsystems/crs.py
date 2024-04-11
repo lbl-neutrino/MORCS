@@ -80,6 +80,7 @@ class CrsController(DaqController):
         cmds = [
             *self.preamble(),
             f'kill -INT $(cat {self.pidfile()})',
+            f'(while ps -p $(cat {self.pidfile()}) > /dev/null; do sleep 1; done)',
             f'rm {self.pidfile()}',
             f'python dump_metadata.py {" ".join(opts)}'
         ]
