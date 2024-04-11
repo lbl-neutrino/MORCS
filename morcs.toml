@@ -1,0 +1,17 @@
+[global]
+# subsystems = ["crs", "lrs"]
+subsystems = ["crs"]
+db = "morcs.sqlite"
+runtime_sec = 86400
+data_stream = "commissioning"
+
+[crs]
+host = "saul"
+remote_venv_dir = "/pscratch/sd/m/mkramer/morcs_test/crs_daq.venv"
+remote_daq_dir = "/pscratch/sd/m/mkramer/morcs_test/crs_daq"
+output_dir = "/pscratch/sd/m/mkramer/morcs_test/output"
+log_dir = "/pscratch/sd/m/mkramer/morcs_test/log"
+packet = false
+
+[lrs]
+host = "acd-daq01:5051"

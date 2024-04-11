@@ -1,24 +1,22 @@
 #!/usr/bin/env python3
 
-import os
-import uuid
-
 from fabric import Connection, Result
 
-from .base import DaqController
+from ..controller import DaqController
+from ..db import DB
 
 
 class CrsController(DaqController):
-    def __init__(self, config: dict, state: dict):
-        super().__init__(config, state)
-        self.conn = Connection(config['host'])
+    def __init__(self, config: dict, db: DB):
+        super().__init__(config, db)
+        self.conn = Connection(config['crs']['host'])
 
     def preamble(self):
         venv_dir = self.config['crs']['remote_venv_dir']
         daq_dir = self.config['crs']['remote_daq_dir']
 
         cmds = [
-            # Ensure that failures mid-chain get reported
+            # Ensure that failures mid-pipe get reported
             f'set -o pipefail'
             f'source {venv_dir}/bin/activate',
             f'cd {daq_dir}'
@@ -44,12 +42,12 @@ class CrsController(DaqController):
         # We need file_count = 1 when specifying the filename
         opts.append('--file_count 1')
         if cfg := self.config['crs'].get('pacman_cfg'):
-            opts.append(f'--pacman_config {cfg}')
+            opts.append(f'--pacman_config "{cfg}"')
 
         output_dir = self.config['crs']['output_dir']
-        run = self.state['next_run']
+        run = self.db.next_run()
         filename = self.datafile(run)
-        opts.append(f'--filename {output_dir}/{filename}')
+        opts.append(f'--filename "{output_dir}/{filename}"')
 
         inner_cmd = f'./record_data.py {" ".join(opts)}'
 
@@ -58,7 +56,8 @@ class CrsController(DaqController):
 
         cmds = [
             *self.preamble(),
-            f'(nohup {inner_cmd} > {log_path} 2>&1 & echo $! > {self.pidfile()})'
+            f'mkdir -p "{output_dir}" "{log_dir}"'
+            f'(nohup {inner_cmd} > "{log_path}" 2>&1 & echo $! > "{self.pidfile()}")'
         ]
 
         r: Result = self.conn.run('&&'.join(cmds))
