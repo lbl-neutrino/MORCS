@@ -9,7 +9,9 @@ from ..db import DB
 class CrsController(DaqController):
     def __init__(self, config: dict, db: DB):
         super().__init__(config, db)
-        self.conn = Connection(config['crs']['host'])
+        connect_kwargs = {'gss_auth': True, 'gss_kex': True}
+        self.conn = Connection(config['crs']['host'],
+                               connect_kwargs=connect_kwargs)
 
     def preamble(self):
         venv_dir = self.config['crs']['remote_venv_dir']

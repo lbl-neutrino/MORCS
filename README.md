@@ -1,5 +1,9 @@
 # Mx2x2 Overall Run Control Software
 
+## Requirements
+
+On AL9 run `dnf install python3-devel krb5-devel`. Kerberos is needed for the SSH connection to the CRS DAQ server.
+
 ## Installing
 
 Do this on e.g. `acd-ops01` as the `acdaq` user.
