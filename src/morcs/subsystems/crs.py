@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+from time import strftime
+
 from fabric import Connection, Result
 
 from ..controller import DaqController
@@ -33,7 +35,8 @@ class CrsController(DaqController):
     def datafile(self, run: int):
         packet = self.config['crs'].get('packet')
         prefix = 'packet' if packet else 'binary'
-        return f'{prefix}-{run:07}.hdf5'
+        tstamp = strftime("%Y_%m_%d_%H_%M_%S_%Z")
+        return f'{prefix}-{run:07}-{tstamp}.hdf5'
 
     def start_run(self):
         opts = []
