@@ -15,6 +15,7 @@ class CrsController(DaqController):
         self.conn = Connection(config['crs']['host'],
                                connect_kwargs=connect_kwargs)
 
+    # NOT USED:
     def preamble(self):
         venv_dir = self.config['crs']['remote_venv_dir']
         daq_dir = self.config['crs']['remote_daq_dir']
@@ -28,6 +29,7 @@ class CrsController(DaqController):
 
         return cmds
 
+    # NOT USED:
     def pidfile(self):
         daq_dir = self.config['crs']['remote_daq_dir']
         return f'{daq_dir}/.daq.pid'
@@ -37,6 +39,18 @@ class CrsController(DaqController):
         prefix = 'packet' if packet else 'binary'
         tstamp = strftime("%Y_%m_%d_%H_%M_%S_%Z")
         return f'{prefix}-{run:07}-{tstamp}.hdf5'
+
+    def run_in_screen(self, cmds: list[str]):
+        screen = self.config['screen_session']
+        for cmd in cmds:
+            qcmd = cmd.replace('"', '\\"')
+            fullcmd = f'screen -S {screen} -X stuff "{qcmd}\r"'
+            self.conn.run(fullcmd, warn=True)
+
+    def ctrlc_in_screen(self):
+        screen = self.config['screen_session']
+        fullcmd = f'screen -S {screen} -X stuff "^C"'
+        self.conn.run(fullcmd, warn=True)
 
     def start_run(self):
         opts = []
@@ -60,15 +74,16 @@ class CrsController(DaqController):
         log_path = f'{log_dir}/{filename}.log'
 
         cmds = [
-            *self.preamble(),
             f'mkdir -p "{output_dir}" "{log_dir}"',
-            f'(nohup {inner_cmd} >> "{log_path}" 2>&1 & echo $! > "{self.pidfile()}")'
+            f'{inner_cmd} >> "{log_path}" 2>&1'
         ]
 
         print('\n'.join(cmds))
 
-        r: Result = self.conn.run(' ; '.join(cmds), disown=True, warn=True)
+        # r: Result = self.conn.run(' ; '.join(cmds), warn=True)
         # assert r.return_code == 0, 'Error starting CRS DAQ'
+
+        self.run_in_screen(cmds)
 
     def stop_run(self):
         run = self.db.latest_run()
@@ -82,13 +97,14 @@ class CrsController(DaqController):
         filename = self.datafile(run)
         opts.append(f'{output_dir}/{filename}')
 
+        cfgdir = '/tmp/MORCS_CRS_TMPCONFIG'
+
         cmds = [
-            *self.preamble(),
-            f'kill -INT $(cat {self.pidfile()})',
-            f'(while ps -p $(cat {self.pidfile()}) > /dev/null; do sleep 1; done)',
-            f'rm {self.pidfile()}',
             f'python dump_metadata.py {" ".join(opts)}'
         ]
+
+        self.ctrlc_in_screen()
+        self.run_in_screen(cmds)
 
         print('\n'.join(cmds))
 
