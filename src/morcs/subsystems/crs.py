@@ -100,6 +100,10 @@ class CrsController(DaqController):
         cfgdir = '/tmp/MORCS_CRS_TMPCONFIG'
 
         cmds = [
+            f'rm -rf {cfgdir}',
+            f'python monitor.py --monitor_dir {cfgdir}'
+            f'python config_util/embed_config.py {filename} {cfgdir}'
+            f'rm -rf {cfgdir}',
             f'python dump_metadata.py {" ".join(opts)}'
         ]
 
