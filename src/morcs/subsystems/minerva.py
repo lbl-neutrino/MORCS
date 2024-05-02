@@ -3,15 +3,15 @@
 import socket
 import uuid
 
-from .base import DaqController
+from ..controller import DaqController
 
 from mnvruncontrol.backend.PostOffice.Routing import PostOffice
 from mnvruncontrol.backend.PostOffice.Envelope import Message, Subscription
 
 
 class MinervaController(DaqController):
-    def __init__(self, config: dict):
-        super().__init__(config)
+    def __init__(self, config: dict, db):
+        super().__init__(config, db)
 
         self.ident = uuid.uuid4()
         self.ip = socket.gethostbyname(socket.gethostname())

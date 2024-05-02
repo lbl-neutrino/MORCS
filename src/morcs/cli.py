@@ -6,12 +6,12 @@ import toml
 from .db import DB
 from .subsystems.crs import CrsController
 from .subsystems.lrs import LrsController
-# from .subsystems.minerva import MinervaController
+from .subsystems.minerva import MinervaController
 
 SUBSYSTEMS = {
     'crs': CrsController,
     'lrs': LrsController,
-    # 'minerva': MinervaController
+    'minerva': MinervaController
 }
 
 class MORCS:
