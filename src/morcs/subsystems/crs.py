@@ -15,25 +15,6 @@ class CrsController(DaqController):
         self.conn = Connection(config['crs']['host'],
                                connect_kwargs=connect_kwargs)
 
-    # NOT USED:
-    def preamble(self):
-        venv_dir = self.config['crs']['remote_venv_dir']
-        daq_dir = self.config['crs']['remote_daq_dir']
-
-        cmds = [
-            # Ensure that failures mid-pipe get reported
-            # f'set -o pipefail',
-            f'source {venv_dir}/bin/activate',
-            f'cd {daq_dir}'
-        ]
-
-        return cmds
-
-    # NOT USED:
-    def pidfile(self):
-        daq_dir = self.config['crs']['remote_daq_dir']
-        return f'{daq_dir}/.daq.pid'
-
     def datafile(self, run: int):
         packet = self.config['crs'].get('packet')
         prefix = 'packet' if packet else 'binary'
