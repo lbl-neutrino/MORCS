@@ -41,14 +41,14 @@ class CrsController(DaqController):
         return f'{prefix}-{run:07}-{tstamp}.hdf5'
 
     def run_in_screen(self, cmds: list[str]):
-        screen = self.config['screen_session']
+        screen = self.config['crs']['screen_session']
         for cmd in cmds:
             qcmd = cmd.replace('"', '\\"')
             fullcmd = f'screen -S {screen} -X stuff "{qcmd}\r"'
             self.conn.run(fullcmd, warn=True)
 
     def ctrlc_in_screen(self):
-        screen = self.config['screen_session']
+        screen = self.config['crs']['screen_session']
         fullcmd = f'screen -S {screen} -X stuff "^C"'
         self.conn.run(fullcmd, warn=True)
 
@@ -63,10 +63,9 @@ class CrsController(DaqController):
         if cfg := self.config['crs'].get('pacman_cfg'):
             opts.append(f'--pacman_config "{cfg}"')
 
-        output_dir = self.config['crs']['output_dir']
         run = self.db.next_run()
         filename = self.datafile(run)
-        opts.append(f'--filename "{output_dir}/{filename}"')
+        opts.append(f'--filename "{filename}"')
 
         inner_cmd = f'python record_data.py {" ".join(opts)}'
 
@@ -74,7 +73,7 @@ class CrsController(DaqController):
         log_path = f'{log_dir}/{filename}.log'
 
         cmds = [
-            f'mkdir -p "{output_dir}" "{log_dir}"',
+            f'mkdir -p "{log_dir}"',
             f'{inner_cmd} >> "{log_path}" 2>&1'
         ]
 
@@ -90,16 +89,18 @@ class CrsController(DaqController):
         if stream := self.config['global'].get('data_stream'):
             opts.append(f'--data-stream {stream}')
 
-        output_dir = self.config['crs']['output_dir']
         filename = self.datafile(run)
-        opts.append(f'{output_dir}/{filename}')
+        opts.append(f'{filename}')
 
         cfgdir = '/tmp/MORCS_CRS_TMPCONFIG'
 
         cmds = [
             f'rm -rf {cfgdir}',
-            f'python monitor.py --monitor_dir {cfgdir}',
-            f'python config_util/embed_config.py {filename} {cfgdir}',
+            f'python archive.py --monitor_dir {cfgdir}',
+            # At this point we should have exactly one timestamped folder in
+            # `cfgdir` and we don't care about the timestamp.
+            f'cp RUN_CONFIG.json {cfgdir}/*',
+            f'python config_util/embed_config.py --use-destination-dir {filename} {cfgdir}/*',
             f'rm -rf {cfgdir}',
             f'python dump_metadata.py {" ".join(opts)}'
         ]

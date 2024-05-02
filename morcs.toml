@@ -6,11 +6,8 @@ data_stream = "commissioning"
 
 [crs]
 host = "acd-daq02"
-remote_venv_dir = "/home/acd/acdaq/CRS_DAQ/daq0/.crsvenv"
-remote_daq_dir = "/home/acd/acdaq/CRS_DAQ/daq0/crs_daq"
-# We let crs_daq's RUN_CONFIG.json set the output dir
-output_dir = ""
-log_dir = "/data/log/commission/April2024/continued_pedestal.2"
+screen_session = "morcs_test"
+log_dir = "/data/morcs_test/log"
 packet = false
 
 [lrs]
