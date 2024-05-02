@@ -80,9 +80,6 @@ class CrsController(DaqController):
 
         print('\n'.join(cmds))
 
-        # r: Result = self.conn.run(' ; '.join(cmds), warn=True)
-        # assert r.return_code == 0, 'Error starting CRS DAQ'
-
         self.run_in_screen(cmds)
 
     def stop_run(self):
@@ -107,10 +104,7 @@ class CrsController(DaqController):
             f'python dump_metadata.py {" ".join(opts)}'
         ]
 
-        self.ctrlc_in_screen()
-        self.run_in_screen(cmds)
-
         print('\n'.join(cmds))
 
-        r: Result = self.conn.run(' ; '.join(cmds), warn=True)
-        # assert r.return_code == 0, 'Error stopping CRS DAQ'
+        self.ctrlc_in_screen()
+        self.run_in_screen(cmds)
