@@ -101,8 +101,8 @@ class CrsController(DaqController):
 
         cmds = [
             f'rm -rf {cfgdir}',
-            f'python monitor.py --monitor_dir {cfgdir}'
-            f'python config_util/embed_config.py {filename} {cfgdir}'
+            f'python monitor.py --monitor_dir {cfgdir}',
+            f'python config_util/embed_config.py {filename} {cfgdir}',
             f'rm -rf {cfgdir}',
             f'python dump_metadata.py {" ".join(opts)}'
         ]
