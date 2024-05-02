@@ -23,6 +23,12 @@ pip install -e .
 source /path/to/MORCS/morcs.venv/bin/activate
 ```
 
+It may be necessary to set up a pair of SSH tunnels to the MINERvA DAQ, e.g.:
+
+``` bash
+ssh -L 1090:localhost:1090 -R 9998:localhost:9998 acd-mnv03
+```
+
 ## Configuring
 
 Edit `morcs.toml` under `[crs]` to specify the hostname of the CRS DAQ server (e.g. `acd-daq02`) and the paths to `crs_daq`, its virtual environment, and the output and log directories. Likewise, under `[lrs]` the `host` should be set appropriately.
