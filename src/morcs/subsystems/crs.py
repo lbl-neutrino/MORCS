@@ -37,16 +37,24 @@ class CrsController(DaqController):
         opts = []
         if self.config['crs'].get('packet'):
             opts.append('--packet')
-        if runtime := self.config['global'].get('runtime_sec'):
+        if runtime := self.config['crs'].get('runtime_sec'):
             opts.append(f'--runtime {runtime}')
         # We need file_count = 1 when specifying the filename
-        opts.append('--file_count 1')
+        file_count = self.config['crs'].get('file_count', -1)
+        opts.append(f'--file_count {file_count}')
         if cfg := self.config['crs'].get('pacman_cfg'):
             opts.append(f'--pacman_config "{cfg}"')
+        opts.append('--record_metadata')
 
         run = self.db.next_run()
+
+        opts.append(f'--run {run}')
+        if stream := self.config['global'].get('data_stream'):
+            opts.append(f'--data_stream {stream}')
+
         filename = self.datafile(run)
-        opts.append(f'--filename "{filename}"')
+        # opts.append(f'--filename "{filename}"')
+        opts.append(f'--file_tag {run:07}')
 
         inner_cmd = f'python record_data.py {" ".join(opts)}'
 
@@ -55,7 +63,8 @@ class CrsController(DaqController):
 
         cmds = [
             f'mkdir -p "{log_dir}"',
-            f'{inner_cmd} >> "{log_path}" 2>&1'
+            # f'{inner_cmd} >> "{log_path}" 2>&1'
+            f'{inner_cmd}'
         ]
 
         print('\n'.join(cmds))
@@ -63,30 +72,4 @@ class CrsController(DaqController):
         self.run_in_screen(cmds)
 
     def stop_run(self):
-        run = self.db.latest_run()
-
-        opts = []
-        opts.append(f'--run {run}')
-        if stream := self.config['global'].get('data_stream'):
-            opts.append(f'--data-stream {stream}')
-
-        filename = self.datafile(run)
-        opts.append(f'{filename}')
-
-        cfgdir = '/tmp/MORCS_CRS_TMPCONFIG'
-
-        cmds = [
-            f'rm -rf {cfgdir}',
-            f'python archive.py --monitor_dir {cfgdir}',
-            # At this point we should have exactly one timestamped folder in
-            # `cfgdir` and we don't care about the timestamp.
-            f'cp RUN_CONFIG.json {cfgdir}/*',
-            f'python config_util/embed_config.py --use-destination-dir {filename} {cfgdir}/*',
-            f'rm -rf {cfgdir}',
-            f'python dump_metadata.py {" ".join(opts)}'
-        ]
-
-        print('\n'.join(cmds))
-
         self.ctrlc_in_screen()
-        self.run_in_screen(cmds)

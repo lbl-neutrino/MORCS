@@ -1,14 +1,14 @@
 [global]
 subsystems = ["crs", "lrs", "minerva"]
 db = "morcs.sqlite"
-runtime_sec = 86400
 data_stream = "commissioning"
 
 [crs]
 host = "acd-daq02"
-screen_session = "morcs_test"
+screen_session = "record_data"
 log_dir = "/data/morcs_test/log"
 packet = false
+runtime_sec = 600
 
 [lrs]
 host = "192.168.197.42:5051"
