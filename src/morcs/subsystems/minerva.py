@@ -1,12 +1,16 @@
 #!/usr/bin/env python3
 
 import socket
+import time
 import uuid
 
 from ..controller import DaqController
 
 from mnvruncontrol.backend.PostOffice.Routing import PostOffice
 from mnvruncontrol.backend.PostOffice.Envelope import Message, Subscription
+
+
+MAGIC_SLEEP_SEC = 10
 
 
 class MinervaController(DaqController):
@@ -56,6 +60,7 @@ class MinervaController(DaqController):
 
     def start_run(self):
         self.get_control()
+        time.sleep(MAGIC_SLEEP_SEC)
         status = self.status()
         # config is a DAQConfiguration
         config = status[0].status['configuration']
@@ -71,6 +76,7 @@ class MinervaController(DaqController):
 
     def stop_run(self):
         self.get_control()
+        time.sleep(MAGIC_SLEEP_SEC)
         msg = Message(subject='mgr_directive',
                       directive='stop',
                       client_id=self.ident)
