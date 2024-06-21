@@ -28,6 +28,9 @@ class DB:
 
     def next_run(self):
         run = self.latest_run() + 1
+        if min_run := self.config['global'].get('min_run'):
+            if run < min_run:
+                return min_run
         return run
 
     def start_run(self):
