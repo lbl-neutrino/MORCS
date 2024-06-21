@@ -12,6 +12,7 @@ class LrsController(DaqController):
     def start_run(self):
         params = {
             'run': self.db.next_run(),
+            'run_starting_instance': 'morcs',
         }
         if stream := self.config['global'].get('data_stream'):
             params['data_stream'] = stream
