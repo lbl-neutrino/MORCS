@@ -16,6 +16,7 @@ RunData = Table('run_data', metadata,
 
 class DB:
     def __init__(self, config: dict):
+        self.config = config
         self.engine = create_engine(f'sqlite:///{config["global"]["db"]}')
         metadata.create_all(self.engine)
 
