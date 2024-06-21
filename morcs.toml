@@ -2,11 +2,13 @@
 subsystems = ["crs", "lrs", "minerva"]
 db = "morcs.sqlite"
 data_stream = "commissioning"
+min_run = 1
 
 [crs]
 host = "acd-daq02"
-screen_session = "record_data"
-log_dir = "/data/morcs_test/log"
+screen_session = "record-data"
+# NOTE: data dir is specified in crs_daq's RUN_CONFIG.JSON
+log_dir = "/log/morcs_test"
 packet = false
 runtime_sec = 600
 
@@ -14,7 +16,8 @@ runtime_sec = 600
 host = "192.168.197.42:5051"
 
 [minerva]
-#remote_addr = "acd-srv03"    # underground
+#remote_addr = "acd-mnv01"    # underground
 #remote_addr = "acd-mnv03"    # Lab F
 remote_addr = "localhost"     # tunnel
 remote_port = 1090
+listen_port = 9998
