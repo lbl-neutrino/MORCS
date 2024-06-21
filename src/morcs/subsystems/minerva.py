@@ -57,10 +57,14 @@ class MinervaController(DaqController):
     def start_run(self):
         self.get_control()
         status = self.status()
+        # config is a DAQConfiguration
+        config = status[0].status['configuration']
+        config.run = self.db.next_run()
+        config.subrun = 1
         msg = Message(subject='mgr_directive',
                       directive='start',
                       client_id=self.ident,
-                      configuration=status[0].status['configuration'])
+                      configuration=config)
         response = self.send(msg)
         self.release_control()
         return response
