@@ -23,12 +23,12 @@ class DB:
     def latest_run(self):
         with self.engine.connect() as conn:
             q = select(func.max(RunData.c.id))
-            return conn.execute(q).one()[0]
+            latest = conn.execute(q).one()[0]
+        return 0 if (latest is None) else latest
 
     def next_run(self):
-        if (latest := self.latest_run()) is None:
-            return 0
-        return latest + 1
+        run = self.latest_run() + 1
+        return run
 
     def start_run(self):
         with self.engine.begin() as txn:
