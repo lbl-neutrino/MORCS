@@ -46,9 +46,9 @@ class MinervaController(DaqController):
         msg = Message(subject='control_request',
                       request=request,
                       requester_id=self.ident,
-                      requester_name='Bart',
+                      requester_name='MORCS',
                       requester_ip=self.ip,
-                      requester_location='MINOS',
+                      requester_location=socket.gethostname(),
                       requester_phone='630-999-9999')
         return self.send(msg)
 
