@@ -1,4 +1,5 @@
 [global]
+blobcraft_dir = "/home/acd/acdaq/faiza/BlobCraft2x2/"
 subsystems = ["crs", "lrs", "minerva"]
 db = "morcs.sqlite"
 data_stream = "commissioning"
@@ -13,7 +14,10 @@ packet = false
 runtime_sec = 600
 
 [lrs]
-host = "192.168.197.42:5051"
+daq_host = "acd-daq04-priv"   
+ssh_host = "acd-daq04"
+daq_port = 5051
+db_path = "/data/LRS_det_config/lrsdetconfig.db"
 
 [minerva]
 #remote_addr = "acd-mnv01"    # underground

@@ -6,8 +6,9 @@ from ..controller import DaqController
 
 class LrsController(DaqController):
     def get_url(self, function):
-        host = self.config['lrs']['host']
-        return f'http://{host}/api/{function}/'
+        host = self.config['lrs']['daq_host']
+        port = self.config['lrs']['daq_port']
+        return f'http://{host}:{port}/api/{function}/'
 
     def start_run(self):
         params = {

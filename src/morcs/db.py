@@ -4,7 +4,7 @@ import datetime
 
 from sqlalchemy import create_engine, func, select, insert, update
 from sqlalchemy import MetaData, Table, Column, Integer, DateTime
-
+from .util import connect_krbrs
 
 metadata = MetaData()
 
@@ -44,4 +44,13 @@ class DB:
         with self.engine.begin() as txn:
             sel = RunData.c.id == select(func.max(RunData.c.id)).scalar_subquery()
             txn.execute(update(RunData).where(sel),
-                        {'end_time': datetime.datetime.now()})
+                    {'end_time': datetime.datetime.fromisoformat('2024-07-10 09:21:59.010185')})
+                        #{'end_time': datetime.datetime.now()})
+        BC_dir = self.config['global']["blobcraft_dir"]
+
+        with connect_krbrs(self.config['lrs']['ssh_host']) as conn:
+            rmt_path = self.config['lrs']['db_path']              #remote path
+            lcl_path = BC_dir + '/config/lrsdetconfig.db'         #local path
+            conn.get(rmt_path, local = lcl_path)
+
+            

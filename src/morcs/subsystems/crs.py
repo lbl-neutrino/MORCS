@@ -6,14 +6,13 @@ from fabric import Connection, Result
 
 from ..controller import DaqController
 from ..db import DB
+from ..util import connect_krbrs
 
 
 class CrsController(DaqController):
     def __init__(self, config: dict, db: DB):
         super().__init__(config, db)
-        connect_kwargs = {'gss_auth': True, 'gss_kex': True}
-        self.conn = Connection(config['crs']['host'],
-                               connect_kwargs=connect_kwargs)
+        self.conn = connect_krbrs(config['crs']['host'])
 
     def datafile(self, run: int):
         packet = self.config['crs'].get('packet')
