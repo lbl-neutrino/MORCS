@@ -28,8 +28,8 @@ class MORCS:
         self.db.start_run()
 
     def stop_run(self):
-        #for s in self.subsystems:
-            #s.stop_run()
+        for s in self.subsystems:
+            s.stop_run()
         self.db.stop_run()
 
 def main():
