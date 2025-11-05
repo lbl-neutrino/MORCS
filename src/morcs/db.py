@@ -44,8 +44,7 @@ class DB:
         with self.engine.begin() as txn:
             sel = RunData.c.id == select(func.max(RunData.c.id)).scalar_subquery()
             txn.execute(update(RunData).where(sel),
-                    {'end_time': datetime.datetime.fromisoformat('2024-07-10 09:21:59.010185')})
-                        #{'end_time': datetime.datetime.now()})
+                        {'end_time': datetime.datetime.now()})
         BC_dir = self.config['global']["blobcraft_dir"]
 
         with connect_krbrs(self.config['lrs']['ssh_host']) as conn:
