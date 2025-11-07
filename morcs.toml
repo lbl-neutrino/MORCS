@@ -8,7 +8,7 @@ min_run = 1
 [crs]
 host = "acd-daq02"
 screen_session = "record-data"
-# NOTE: data dir is specified in crs_daq's RUN_CONFIG.JSON
+data_dir = "/data/2025_Operations_Cold/PLS_SET_MORCS_DATA_DIR"
 log_dir = "/log/morcs_test"
 packet = false
 runtime_sec = 600

@@ -57,11 +57,19 @@ class CrsController(DaqController):
 
         inner_cmd = f'python record_data.py {" ".join(opts)}'
 
+        data_dir = self.config['crs']['data_dir']
         log_dir = self.config['crs']['log_dir']
         log_path = f'{log_dir}/{filename}.log'
 
+        # Using jq would be much cleaner: jq '.destination_dir |= "/what/ever"'
+        # but that would reformat the whole file which might annoy crs daq ppl
+        sed_horror = r's@\([[:space:]]*"destination_dir_" *: *"\)\([\^"]\+\)\(.*\)@\\\1' + data_dir + r'\\\3@'
+
         cmds = [
             f'mkdir -p "{log_dir}"',
+            'cp RUN_CONFIG.json RUN_CONFIG.json.morcs_bak',
+            f'sed -i \'{sed_horror}\' RUN_CONFIG.json',
+            # f"cat RUN_CONFIG.json.morcs_bak | jq --tab '.destination_dir_ |= \"{data_dir}\"' > RUN_CONFIG.json",
             # f'{inner_cmd} >> "{log_path}" 2>&1'
             f'{inner_cmd}'
         ]
