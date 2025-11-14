@@ -3,13 +3,14 @@
 import datetime
 
 from sqlalchemy import create_engine, func, select, insert, update
-from sqlalchemy import MetaData, Table, Column, Integer, DateTime
+from sqlalchemy import MetaData, Table, Column, Integer, DateTime, String
 from .util import connect_krbrs
 
 metadata = MetaData()
 
 RunData = Table('run_data', metadata,
     Column('id', Integer, primary_key=True),
+    Column('source', String),
     Column('start_time', DateTime),
     Column('end_time', DateTime))
 
@@ -38,6 +39,7 @@ class DB:
             txn.execute(
                 insert(RunData),
                 {'id': self.next_run(),
+                 'source': self.config['global']['source'],
                  'start_time': datetime.datetime.now()})
 
     def stop_run(self):

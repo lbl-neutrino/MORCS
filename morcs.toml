@@ -3,6 +3,7 @@ blobcraft_dir = "/home/acd/acdaq/faiza/BlobCraft2x2/"
 subsystems = ["crs", "lrs", "minerva"]
 db = "morcs.sqlite"
 data_stream = "commissioning"
+source = "none"
 min_run = 1
 
 [crs]
